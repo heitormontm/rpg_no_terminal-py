@@ -73,7 +73,65 @@ def turno_inimigo(inimigo, heroi):
     else:
         inimigo.atacar(heroi)
 
-dragao = Dragao()
-goblin = Goblin()
-print(isinstance(dragao, Inimigo), isinstance(goblin, Personagem))
+def batalha(heroi, inimigo):
+    print(f'{heroi.nome} encontrou com {inimigo.nome}')
+
+    turno = 1
+    while heroi.esta_vivo() and inimigo.esta_vivo():
+        print(f'\n--- Turno {turno} ---')
+        heroi.status()
+        inimigo.status()
+
+        acao = input('\nEscolha: [1] Atacar [2] Poção [3] Fugir >').strip()
+
+        if acao == '1':
+            heroi.atacar(inimigo)
+        elif acao == '2':
+            heroi.usar_pocao()
+        elif acao == '3':
+            print(f'{heroi.nome} fugiu da batalha!')
+            return
+        else:
+            print('Ação inválida, você hesita e perde o turno!')
+
+        if inimigo.esta_vivo():
+            turno_inimigo(inimigo, heroi)
+        turno += 1
+
+        print()
+    if heroi.esta_vivo():
+            print(f'{heroi.nome} derrotou {inimigo.nome}')
+    else:
+            print(f'{heroi.nome} caiu em batalha contra {inimigo.nome} ...')
+
+def menu():
+    print('\n === RPG DE TERMINAL ===')
+    nome = input('Nome do seu personagem: ').strip() or 'Herói'
+    heroi = Personagem(nome)
+
+    inimigos_disponiveis = {'1': Goblin, '2': Dragao}
+
+    while heroi.esta_vivo():
+        print('\nEscolha seu oponente:')
+        print('[1] Goblin (fraco, mas rápido)')
+        print('[2] Dragão (forte, cospe fogo)')
+        print('[0] Sair')
+        escolha = input('> ').strip()
+
+        if escolha == '0':
+            print('Até a próxima aventura!')
+            break
+        elif escolha in inimigos_disponiveis:
+            inimigo = inimigos_disponiveis[escolha]()
+            batalha(heroi, inimigo)
+            if not heroi.esta_vivo():
+                print('\nFim de jogo. Obrigado por jogar!')
+        else:
+            print('Opção inválida!')
+
+if __name__ == '__main__':
+    menu()
+
+
+
 
